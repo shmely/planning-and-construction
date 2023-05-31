@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
 import classes from './project.module.css';
-import { TextField,Button } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 
 
 
@@ -10,44 +10,9 @@ export default function Project() {
     const [project, setProject] = useState({ name: '', address: '' });
     const nameInput = useRef();
     const addressInput = useRef();
-    // useEffect(() => {
-    //     const getProjectById = async (id) => {
-    //         debugger;
-    //         const response = await fetch(`/api/projects/${id}`, {
-    //             method: 'GET',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-    //         const savedProj = await response.json();
-    //         setProject(savedProj);
-    //     }
-    //     const id = router.query.projectId;
-    //     if (id && id !== 'new') {
-    //         getProjectById(id);
-    //     }
-    //     else setProject({ name: '', address: '', buildings: [] })
-
-    // }, [])
-
-
-    const [currentBuilding, setBuilding] = useState(
-        {
-            _id: null,
-            description: '',
-            numberOfFloors: 0,
-            determiningFloorLevelMetter: 0,
-            entranceLevelHighestFloorIntendedOccupancyMetter: 0,
-            lowestFloorLevelInbuilding: 0,
-            isResidentialBuilding: false,
-            isGatheringBuilding: false
-        })
-
-
-
 
     const saveProject = async (event) => {
-        event.preventDefault();        
+        event.preventDefault();
         const method = project._id ? 'PUT' : 'POST'
         const response = await fetch('/api/projects/project', {
             method,
@@ -58,7 +23,7 @@ export default function Project() {
         });
         if (response.status === 201) {
             const savedProj = await response.json();
-            setProject(savedProj);            
+            setProject(savedProj);
             const projectRoute = `/projects/${savedProj._id}`
 
             if (router.asPath !== projectRoute) {
@@ -73,41 +38,6 @@ export default function Project() {
     const moveToBuilding = (event) => {
         router.push(`${router.asPath}/buildings`);
     }
-
-
-
-
-    // const saveBuilding = (event) => {
-    //     event.preventDefault();
-    //     if (!currentBuilding._id) {
-    //         currentBuilding._id = project.buildings.length + 1;
-    //         project.buildings.push(currentBuilding);
-    //     } else {
-    //         const index = project.buildings.findIndex(p => p._id === currentBuilding._id);
-    //         if (index < 0)
-    //             project.buildings.push(currentBuilding);
-    //         else
-    //             project.buildings.splice(index, 1, currentBuilding);
-    //     }
-    //     saveProject();
-
-    // }
-
-
-
-    // const onProjectChange = (event) => {
-    //     const name = event.target.name;
-    //     const value = event.target.value;
-    //     const updated = { ...project };
-    //     updated[name] = value;
-    //     setProject(updated);
-    // }
-
-    
-
-
-
-
     if (!project) {
         return (<h1>Loading...</h1>)
     }
@@ -125,6 +55,7 @@ export default function Project() {
                         label='שם פרויקט'
                         name='name'
                         type='text'
+                        InputLabelProps={{ shrink: true }}
                         className={classes.textBox}
                         multiline={false}
                         placeholder='הזן שם פרויקט'
@@ -134,7 +65,7 @@ export default function Project() {
                         id='address'
                         name='address'
                         label='כתובת'
-                        type='text'                        
+                        type='text'
                         className={classes.textBox}
                         multiline={true}
                         rows={3}
@@ -147,7 +78,7 @@ export default function Project() {
 
                 </div>
 
-                
+
             </form>
         </main>
     )

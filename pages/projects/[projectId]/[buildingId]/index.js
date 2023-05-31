@@ -20,7 +20,12 @@ export default function Buildings() {
    useEffect(() => {
       const projectId = router.query.projectId;
       if (projectId) {
-         setBuilding(...currentBuilding.projectId = projectId);
+         setBuilding((prevState => {
+            const building = { ...prevState };
+            prevState.projectId = projectId;
+            return building;
+
+         }));
       }
 
 
@@ -67,21 +72,30 @@ export default function Buildings() {
             <TextField
                id='description' name='description'
                type='text' value={currentBuilding.description}
-               className={classes.textBox} multiline={true}
+               className={classes.textBox}
+               multiline={true}
+               InputLabelProps={{ shrink: true }}
                rows={3}
                label='שם\תיאור בניין'
                placeholder='הזן שם\תיאור בניין'
                onChange={onBuildingChange} />
             <TextField
                id='numberOfFloors' name='numberOfFloors'
-               type='number' value={currentBuilding.numberOfFloors}
-               className={classes.textBox} multiline={false}
+               type='number'
+               InputLabelProps={{ shrink: true }}
+               value={currentBuilding.numberOfFloors}
+               className={classes.textBox}
+               multiline={false}
                label='מספר קומות' placeholder='הזן מספר קומות'
                onChange={onBuildingChange} />
             <TextField
-               id='determiningFloorLevelMetter' name='determiningFloorLevelMetter'
-               type='number' value={currentBuilding.determiningFloorLevelMetter}
-               className={classes.textBox} helperText='מטר'
+               id='determiningFloorLevelMetter'
+               name='determiningFloorLevelMetter'
+               type='number'
+               value={currentBuilding.determiningFloorLevelMetter}
+               className={classes.textBox}
+               InputLabelProps={{ shrink: true }}
+               helperText='מטר'
                multiline={false} label='מפלס הקומה הקובעת'
                placeholder='הזן מפלס הקומה הקובעת'
                onChange={onBuildingChange} />
@@ -91,12 +105,14 @@ export default function Buildings() {
                id='entranceLevelHighestFloorIntendedOccupancyMetter' name='entranceLevelHighestFloorIntendedOccupancyMetter'
                type='number' value={currentBuilding.entranceLevelHighestFloorIntendedOccupancyMetter}
                className={classes.textBox} helperText='מטר'
+               InputLabelProps={{ shrink: true }}
                multiline={false} label='מפלס הכניסה לקומה הגבוהה ביותר המיועדת לאיכלוס'
                onChange={onBuildingChange} />
             <TextField
                id='lowestFloorLevelInbuilding' name='lowestFloorLevelInbuilding'
                type='number' value={currentBuilding.lowestFloorLevelInbuilding}
                className={classes.textBox} helperText='מטר'
+               InputLabelProps={{ shrink: true }}
                multiline={false} label='מפלס הרצפה הנמוכה ביותר במבנה'
                onChange={onBuildingChange} />
             <div className={classes.checkBoxs}>
