@@ -1,41 +1,4 @@
-.projectFormWrapper {
-    display: grid;
-    grid-template-areas:
-      "title"
-      "form"
-  
-  
-  }
-  
-  .title {
-    grid-area: title;
-    text-align: center;
-    padding-block-start: 15px;
-    padding-block-end: 15px;
-  }
-  
-  .form {
-    padding-inline-start: 20px;
-    grid-area: form;
-    justify-items: start;
-    display: grid;
-    grid-template-columns: 250px 400px 1fr;
-    grid-template-areas:
-      "project project project"
-      "building building building"
-      "submit submit submit"
-  }
-  
-  .project {
-    grid-area: project;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin-block-end: 15px;
-  }
-  
-  .building {
+.building {
     padding-block-end: 15px;
     margin-block-end: 15px;
     grid-template-columns: 250px 250px max-content;
@@ -87,7 +50,7 @@
   
   .textBox {
     margin-block-end: 15px !important;
-    min-width: 220px !important;
+    min-width: 250px !important;
     width: max-content;
   }
   
@@ -95,9 +58,11 @@
     grid-area: submitBuilding;
   }
   
-  .submitProject {
+  .submitProject {   
     grid-area: submit;
+    width: 100%;
   }
   .button {
-    width: 150px;
+    width: 120px;
+    margin-inline-end: 10px !important;
   }

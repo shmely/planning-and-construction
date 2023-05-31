@@ -19,7 +19,7 @@ function MainNavigation() {
             <Link href='/projects/'>רשימת פרויקטים</Link>
           </li>
           <li>
-            <Link href='/projects/edit/new/'>פרויקט חדש</Link>
+            <Link href='/projects/new/'>פרויקט חדש</Link>
           </li>
         </ul>
       </nav>
