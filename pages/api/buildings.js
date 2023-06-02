@@ -1,5 +1,4 @@
-
-import { connectToDatabase } from '../../../lib/db';
+import { connectToDatabase } from '../../lib/db';
 const ObjectId = require('mongodb').ObjectId
 
 async function handler(req, res) {
@@ -7,13 +6,13 @@ async function handler(req, res) {
     if (req.method === 'POST') {
         try {
 
-            let project = req.body;
-            const projectTable = client.db('planning-and-construction').collection('projects');
-            const result = await projectTable.insertOne(project);
+            let building = req.body;
+            const buildingTable = client.db('planning-and-construction').collection('buildings');
+            const result = await buildingTable.insertOne(building);
             console.log(result);
-            project._id = result.insertedId;
+            building._id = result.insertedId;
             client.close()
-            res.status(201).json(project);
+            res.status(201).json(building);
         } catch (error) {
             console.log(error);
             client.close()
@@ -22,12 +21,10 @@ async function handler(req, res) {
     }
     if (req.method === 'PUT') {
         try {
-            let project = req.body;
-            const projectTable = client.db('planning-and-construction').collection('projects');
-            project._id = new ObjectId(project._id);
-            const result = await projectTable.replaceOne({ _id: project._id }, project);
-            
-            
+            let building = req.body;
+            const buildingTable = client.db('planning-and-construction').collection('buildings');
+            building._id = new ObjectId(building._id);
+            const result = await buildingTable.replaceOne({ _id: building._id }, building);
             client.close()
             res.status(201).json(project);
         } catch (error) {

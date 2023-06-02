@@ -14,7 +14,7 @@ export default function Project() {
     const saveProject = async (event) => {
         event.preventDefault();
         const method = project._id ? 'PUT' : 'POST'
-        const response = await fetch('/api/projects/project', {
+        const response = await fetch('/api/projects', {
             method,
             body: JSON.stringify({ name: nameInput.current.value, address: addressInput.current.value }),
             headers: {
@@ -35,7 +35,7 @@ export default function Project() {
 
     }
 
-    const moveToBuilding = (event) => {
+    const moveToBuilding = () => {
         router.push(`${router.asPath}/buildings`);
     }
     if (!project) {

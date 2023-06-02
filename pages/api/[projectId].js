@@ -1,5 +1,5 @@
 import { ObjectId } from 'bson';
-import { connectToDatabase } from '../../../lib/db';
+import { connectToDatabase } from '../../lib/db';
 async function handler(req, res) {    
     const query = req.query;
     const { projectId } = query;

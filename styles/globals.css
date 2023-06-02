@@ -1,5 +1,6 @@
 :root {
   direction: rtl;
+  background-color: #fcfcfc;;
   --max-width: 1100px;
   --border-radius: 12px;
   --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
