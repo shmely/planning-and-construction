@@ -17,7 +17,7 @@ export default function Buildings() {
    const [buildings, setBuildings] = useState([]);
    const [residence, setResidence] = useState(false);
    const [crowding, setCrowding] = useState(false);
-   const [isLoading,setIsLoading]=useState(false);
+   const [isLoading, setIsLoading] = useState(false);
    const buildingDef = {
       '1-12': {
          type: 'בניין רגיל',
@@ -135,7 +135,7 @@ export default function Buildings() {
       <div className={classes.container}>
          {
             isLoading &&
-            <CircularProgress color="secondary"  sx={{ position: 'absolute', top: '50%', left: '50%' }} />
+            <CircularProgress color="secondary" sx={{ position: 'absolute', top: '50%', left: '50%' }} />
          }
          <form className={classes.building}>
 
@@ -204,14 +204,14 @@ export default function Buildings() {
                      name='residence'
                      color="secondary"
                      label='בנין מגורים'
-                     control={<Checkbox  color="secondary" checked={residence} onChange={() => setResidence(!residence)} />}
+                     control={<Checkbox color="secondary" checked={residence} onChange={() => setResidence(!residence)} />}
                   />
                   <FormControlLabel
                      id='crowding'
                      name='crowding'
                      color="secondary"
                      label='בנין להתקהלות'
-                     control={<Checkbox  color="secondary" checked={crowding} onChange={() => setCrowding(!crowding)} />}
+                     control={<Checkbox color="secondary" checked={crowding} onChange={() => setCrowding(!crowding)} />}
                   />
                </div>
 
@@ -227,13 +227,10 @@ export default function Buildings() {
 
             </div>
             <div className={classes.buildingView}>
-               <BuildingsList onSelectBuildnig={onSelectBuildnig} buildings={buildings}>
-
-               </BuildingsList>
-
+               <BuildingsList onSelectBuildnig={onSelectBuildnig} buildings={buildings}></BuildingsList>
             </div>
 
-            <Button variant='contained'  color="secondary"
+            <Button variant='contained' color="secondary"
                className={`${classes.SubmitBuilding} ${classes.button} `}
                onClick={saveBuilding}>{buildingId ? 'עדכן בנין' : 'הוסף בנין'}</Button>
          </form>
