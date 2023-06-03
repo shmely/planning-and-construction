@@ -17,6 +17,7 @@ export default function Project() {
     const saveProject = async (event) => {
         event.preventDefault();
         setIsLoading(true);
+        debugger;
         const method = project._id ? 'PUT' : 'POST'
         const response = await fetch('/api/projects', {
             method,
@@ -70,7 +71,7 @@ export default function Project() {
                         className={classes.textBox}
                         multiline={false}
                         placeholder='הזן שם פרויקט'
-                        ref={nameInput}
+                        inputRef={nameInput}
                     />
                     <TextField
                         id='address'
@@ -82,11 +83,11 @@ export default function Project() {
                         multiline={true}
                         rows={3}
                         placeholder='הזן כתובת'
-                        ref={addressInput} />
+                        inputRef={addressInput} />
                     <div className={classes.submitProject}>
                         <Button color="secondary" onClick={saveProject} variant="contained" className={classes.button}>{addUpdateProjectBtn}</Button>
                         <Tooltip title="עבור להוספת בינינים">
-                        <Button color="secondary" onClick={moveToBuilding} disabled={nextButtonDisabeled} variant="contained" className={classes.button}>הבא</Button>
+                            <Button color="secondary" onClick={moveToBuilding} disabled={nextButtonDisabeled} variant="contained" className={classes.button}>הבא</Button>
                         </Tooltip>
                     </div>
 

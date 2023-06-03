@@ -4,9 +4,35 @@
   position: relative;
 }
 
+.projectListCont {
+  padding-block-start: 30px;
+  padding-inline-start: 30px;
+}
+
+.projectList {
+  list-style-type: none;
+
+}
+
+.projectListItem {
+  margin-block-end: 15px;
+  font-size: 18px;
+}
+
+.projectName {
+  color: #3e0b5f;
+  font-weight: bold;
+
+
+}
+
+.link {
+  text-decoration: underline;
+}
+
 
 .projectFormWrapper {
-  
+
   display: grid;
   grid-template-areas:
     "title"
