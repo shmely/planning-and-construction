@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import classes from './buildings.module.css';
 import { TextField } from '@mui/material';
 import { FormControlLabel, Checkbox, Button } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import BuildingsList from '../../../../components/building-list/buildingsList';
 export default function Buildings() {
    const router = useRouter();
@@ -16,6 +17,7 @@ export default function Buildings() {
    const [buildings, setBuildings] = useState([]);
    const [residence, setResidence] = useState(false);
    const [crowding, setCrowding] = useState(false);
+   const [isLoading,setIsLoading]=useState(false);
    const buildingDef = {
       '1-12': {
          type: 'בניין רגיל',
@@ -72,6 +74,7 @@ export default function Buildings() {
 
    const saveBuilding = async (event) => {
       event.preventDefault();
+      setIsLoading(true);
       console.log('on save building')
       const building = {
          _id: buildingId,
@@ -111,8 +114,10 @@ export default function Buildings() {
          setBaseFloorLevel(0);
          setResidence(false);
          setCrowding(false);
+         setIsLoading(false);
 
       } else {
+         setIsLoading(false);
          console.log(response.statusText);
       }
 
@@ -127,99 +132,112 @@ export default function Buildings() {
 
    const buildingType = getBuildingTypeDescription();
    return (
+      <div className={classes.container}>
+         {
+            isLoading &&
+            <CircularProgress color="secondary"  sx={{ position: 'absolute', top: '50%', left: '50%' }} />
+         }
+         <form className={classes.building}>
 
-      <form className={classes.building}>
-         <div className={classes.title}>
-            <h1 >הוספת מבנים</h1>
-         </div>
-         <div className={classes.buildingCol1}>
-            <TextField
-               id='description'
-               name='description'
-               type='text'
-               inputRef={descInput}
-               className={classes.textBox}
-               multiline={true}
-               InputLabelProps={{ shrink: true }}
-               rows={3}
-               label='שם\תיאור בניין'
-               placeholder='הזן שם\תיאור בניין'
-            />
-            <TextField
-               id='floors' name='floors'
-               type='number'
-               inputRef={floorsInput}
-               InputLabelProps={{ shrink: true }}
-               className={classes.textBox}
-               multiline={false}
-               label='מספר קומות'
-               placeholder='הזן מספר קומות'
-            />
-            <TextField
-               id='baseFloorLevel'
-               name='baseFloorLevel'
-               type='number'
-               value={baseFloorLevel}
-               className={classes.textBox}
-               InputLabelProps={{ shrink: true }}
-               helperText='מטר'
-               multiline={false} label='מפלס הקומה הקובעת'
-               placeholder='הזן מפלס הקומה הקובעת'
-               onChange={() => setBaseFloorLevel(+event.target.value)} />
-            <TextField
-               id='maxFloor' name='maxFloor'
-               type='number'
-               value={maxFloor}
-               className={classes.textBox}
-               helperText='מטר'
-               InputLabelProps={{ shrink: true }}
-               multiline={false} label='מפלס הכניסה לקומה הגבוהה ביותר המיועדת לאיכלוס'
-               onChange={() => setMaxFloor(+event.target.value)} />
-            <TextField
-               id='minFloor' name='minFloor'
-               type='number'
-               className={classes.textBox}
-               inputRef={minFloorInput}
-               helperText='מטר'
-               InputLabelProps={{ shrink: true }}
-               multiline={false} label='מפלס הרצפה הנמוכה ביותר במבנה' />
-            <div className={classes.checkBoxs}>
-               <FormControlLabel
-                  id='residence'
-                  name='residence'
-                  label='בנין מגורים'
-                  control={<Checkbox checked={residence} onChange={() => setResidence(!residence)} />}
+            <div className={classes.title}>
+               <h1 >הוספת מבנים</h1>
+            </div>
+            <div className={classes.buildingCol1}>
+               <TextField
+                  id='description'
+                  name='description'
+                  type='text'
+                  color="secondary"
+                  inputRef={descInput}
+                  className={classes.textBox}
+                  multiline={true}
+                  InputLabelProps={{ shrink: true }}
+                  rows={3}
+                  label='שם\תיאור בניין'
+                  placeholder='הזן שם\תיאור בניין'
                />
-               <FormControlLabel
-                  id='crowding'
-                  name='crowding'
-                  label='בנין להתקהלות'
-                  control={<Checkbox checked={crowding} onChange={() => setCrowding(!crowding)} />}
+               <TextField
+                  id='floors' name='floors'
+                  type='number'
+                  inputRef={floorsInput}
+                  color="secondary"
+                  InputLabelProps={{ shrink: true }}
+                  className={classes.textBox}
+                  multiline={false}
+                  label='מספר קומות'
+                  placeholder='הזן מספר קומות'
                />
+               <TextField
+                  id='baseFloorLevel'
+                  name='baseFloorLevel'
+                  type='number'
+                  color="secondary"
+                  value={baseFloorLevel}
+                  className={classes.textBox}
+                  InputLabelProps={{ shrink: true }}
+                  helperText='מטר'
+                  multiline={false} label='מפלס הקומה הקובעת'
+                  placeholder='הזן מפלס הקומה הקובעת'
+                  onChange={() => setBaseFloorLevel(+event.target.value)} />
+               <TextField
+                  id='maxFloor' name='maxFloor'
+                  type='number'
+                  value={maxFloor}
+                  color="secondary"
+                  className={classes.textBox}
+                  helperText='מטר'
+                  InputLabelProps={{ shrink: true }}
+                  multiline={false} label='מפלס הכניסה לקומה הגבוהה ביותר המיועדת לאיכלוס'
+                  onChange={() => setMaxFloor(+event.target.value)} />
+               <TextField
+                  id='minFloor' name='minFloor'
+                  type='number'
+                  className={classes.textBox}
+                  color="secondary"
+                  inputRef={minFloorInput}
+                  helperText='מטר'
+                  InputLabelProps={{ shrink: true }}
+                  multiline={false} label='מפלס הרצפה הנמוכה ביותר במבנה' />
+               <div className={classes.checkBoxs}>
+                  <FormControlLabel
+                     id='residence'
+                     name='residence'
+                     color="secondary"
+                     label='בנין מגורים'
+                     control={<Checkbox  color="secondary" checked={residence} onChange={() => setResidence(!residence)} />}
+                  />
+                  <FormControlLabel
+                     id='crowding'
+                     name='crowding'
+                     color="secondary"
+                     label='בנין להתקהלות'
+                     control={<Checkbox  color="secondary" checked={crowding} onChange={() => setCrowding(!crowding)} />}
+                  />
+               </div>
+
+            </div>
+            <div className={classes.buildingCol2}>
+               {
+                  (buildingType && buildingType.definition) &&
+                  <div className={classes.BuildingType}>
+                     <label className={classes.lblType}>{buildingType ? buildingType.type : 'סוג בנין'}</label>
+                     {buildingType ? buildingType.definition : ''}
+                  </div>
+               }
+
+            </div>
+            <div className={classes.buildingView}>
+               <BuildingsList onSelectBuildnig={onSelectBuildnig} buildings={buildings}>
+
+               </BuildingsList>
+
             </div>
 
-         </div>
-         <div className={classes.buildingCol2}>
-            {
-               (buildingType && buildingType.definition) &&
-               <div className={classes.BuildingType}>
-                  <label className={classes.lblType}>{buildingType ? buildingType.type : 'סוג בנין'}</label>
-                  {buildingType ? buildingType.definition : ''}
-               </div>
-            }
-
-         </div>
-         <div className={classes.buildingView}>
-            <BuildingsList onSelectBuildnig={onSelectBuildnig} buildings={buildings}>
-
-            </BuildingsList>
-
-         </div>
-
-         <Button variant='contained'
-            className={`${classes.SubmitBuilding} ${classes.button} `}
-            onClick={saveBuilding}>{buildingId ? 'עדכן בנין' : 'הוסף בנין'}</Button>
-      </form>
+            <Button variant='contained'  color="secondary"
+               className={`${classes.SubmitBuilding} ${classes.button} `}
+               onClick={saveBuilding}>{buildingId ? 'עדכן בנין' : 'הוסף בנין'}</Button>
+         </form>
+      </div>
    )
 }
 

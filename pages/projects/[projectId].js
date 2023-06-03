@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
 import classes from './project.module.css';
 import { TextField, Button } from "@mui/material";
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 
@@ -10,9 +11,11 @@ export default function Project() {
     const [project, setProject] = useState({ name: '', address: '' });
     const nameInput = useRef();
     const addressInput = useRef();
+    const [isLoading, setIsLoading] = useState(false);
 
     const saveProject = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
         const method = project._id ? 'PUT' : 'POST'
         const response = await fetch('/api/projects', {
             method,
@@ -25,11 +28,13 @@ export default function Project() {
             const savedProj = await response.json();
             setProject(savedProj);
             const projectRoute = `/projects/${savedProj._id}`
-
+            setIsLoading(false);
             if (router.asPath !== projectRoute) {
                 router.replace(projectRoute);
             }
+
         } else {
+            setIsLoading(false);
             console.log(response.statusText);
         }
 
@@ -46,6 +51,10 @@ export default function Project() {
 
     return (
         <main className={classes.projectFormWrapper}>
+            {
+                isLoading &&
+                <CircularProgress color="secondary" sx={{ position: 'absolute', top: '50%', left: '50%' }} />
+            }
 
             <form className={classes.form}>
                 <div className={classes.project}>
@@ -53,6 +62,7 @@ export default function Project() {
                     <TextField
                         id='projectName'
                         label='שם פרויקט'
+                        color="secondary"
                         name='name'
                         type='text'
                         InputLabelProps={{ shrink: true }}
@@ -66,14 +76,15 @@ export default function Project() {
                         name='address'
                         label='כתובת'
                         type='text'
+                        color="secondary"
                         className={classes.textBox}
                         multiline={true}
                         rows={3}
                         placeholder='הזן כתובת'
                         ref={addressInput} />
                     <div className={classes.submitProject}>
-                        <Button onClick={saveProject} variant="contained" className={classes.button}>{addUpdateProjectBtn}</Button>
-                        <Button onClick={moveToBuilding} disabled={nextButtonDisabeled} variant="contained" className={classes.button}>הבא</Button>
+                        <Button color="secondary" onClick={saveProject} variant="contained" className={classes.button}>{addUpdateProjectBtn}</Button>
+                        <Button color="secondary" onClick={moveToBuilding} disabled={nextButtonDisabeled} variant="contained" className={classes.button}>הבא</Button>
                     </div>
 
                 </div>

@@ -43,6 +43,7 @@ const BuildingsList = (props) => {
                 <IconButton
                   aria-label="edit"
                   size="small"
+                  color="secondary"
                   onClick={() => props.onSelectBuildnig(row)}
                 >
                   {<EditIcon />}
@@ -59,12 +60,12 @@ const BuildingsList = (props) => {
               <TableCell align="center"><FormControlLabel
 
                 checked={row.residence}
-                control={<Checkbox />}
+                control={<Checkbox  color="secondary" />}
               />
               </TableCell>
               <TableCell align="center"><FormControlLabel
                 checked={row.crowding}
-                control={<Checkbox />}
+                control={<Checkbox  color="secondary" />}
               /></TableCell>
               <TableCell>
                 <IconButton
