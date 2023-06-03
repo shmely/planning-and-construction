@@ -13,6 +13,7 @@
 .building .title {
   grid-area: title;
   display: flex;
+  color: #3e0b5f;
 }
 
 .buildingCol1 {
