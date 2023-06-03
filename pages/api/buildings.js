@@ -26,7 +26,7 @@ async function handler(req, res) {
             building._id = new ObjectId(building._id);
             const result = await buildingTable.replaceOne({ _id: building._id }, building);
             client.close()
-            res.status(201).json(project);
+            res.status(201).json(building);
         } catch (error) {
             console.log(error);
             client.close()

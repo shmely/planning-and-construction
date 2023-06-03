@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import classes from './buildings.module.css';
 import { TextField } from '@mui/material';
 import { FormControlLabel, Checkbox, Button } from '@mui/material';
@@ -9,13 +9,13 @@ export default function Buildings() {
    const [maxFloor, setMaxFloor] = useState(0);
    const [baseFloorLevel, setBaseFloorLevel] = useState(0);
    const [projectId, setProjectId] = useState(null);
-   const [id, setId] = useState(null);
-   const descInput = useRef();
+   const [buildingId, setBuildingId] = useState(null);
+   const descInput = React.useRef();
    const floorsInput = useRef();
    const minFloorInput = useRef();
-   const residenceChk = useRef();
-   const crowdingChk = useRef();
    const [buildings, setBuildings] = useState([]);
+   const [residence, setResidence] = useState(false);
+   const [crowding, setCrowding] = useState(false);
    const buildingDef = {
       '1-12': {
          type: 'בניין רגיל',
@@ -33,6 +33,18 @@ export default function Buildings() {
    }
 
 
+   const onSelectBuildnig = (building) => {
+      setBuildingId(building._id);
+      descInput.current.value = building.description;
+      floorsInput.current.value = building.floors;
+      minFloorInput.current.value = building.minFloor;
+      setResidence(building.residence);
+      setCrowding(building.crowding);
+      setBaseFloorLevel(building.baseFloorLevel);
+      setMaxFloor(building.maxFloor);
+   }
+
+
 
    const getBuildingTypeDescription = () => {
       if (maxFloor && baseFloorLevel && maxFloor >= baseFloorLevel) {
@@ -47,27 +59,30 @@ export default function Buildings() {
    }
 
    useEffect(() => {
-      const prjId = router.query.projectId;
-      if (prjId) {
-         setProjectId(prjId)
+      if (router.isReady) {
+         const prjId = router.query.projectId;
+         if (prjId) {
+            setProjectId(prjId)
+         }
       }
 
-   }, [])
+
+   }, [router.isReady])
 
 
    const saveBuilding = async (event) => {
       event.preventDefault();
       console.log('on save building')
       const building = {
-         _id: id,
+         _id: buildingId,
          projectId,
          description: descInput.current.value,
          floors: +floorsInput.current.value,
          minFloor: +minFloorInput.current.value,
          maxFloor,
          baseFloorLevel,
-         residence: residenceChk.current.checked,
-         crowding: crowdingChk.current.value
+         residence,
+         crowding
       }
       const method = building._id ? 'PUT' : 'POST'
       const response = await fetch('/api/buildings', {
@@ -88,8 +103,14 @@ export default function Buildings() {
                updated[itemIndex] = savedBuilding;
          }
          setBuildings(updated);
-         setId(null);
-
+         setBuildingId(null);
+         descInput.current.value = '';
+         floorsInput.current.value = 0;
+         minFloorInput.current.value = 0,
+            setMaxFloor(0);
+         setBaseFloorLevel(0);
+         setResidence(false);
+         setCrowding(false);
 
       } else {
          console.log(response.statusText);
@@ -116,7 +137,7 @@ export default function Buildings() {
                id='description'
                name='description'
                type='text'
-               ref={descInput}
+               inputRef={descInput}
                className={classes.textBox}
                multiline={true}
                InputLabelProps={{ shrink: true }}
@@ -127,7 +148,7 @@ export default function Buildings() {
             <TextField
                id='floors' name='floors'
                type='number'
-               ref={floorsInput}
+               inputRef={floorsInput}
                InputLabelProps={{ shrink: true }}
                className={classes.textBox}
                multiline={false}
@@ -147,8 +168,10 @@ export default function Buildings() {
                onChange={() => setBaseFloorLevel(+event.target.value)} />
             <TextField
                id='maxFloor' name='maxFloor'
-               type='number' value={maxFloor}
-               className={classes.textBox} helperText='מטר'
+               type='number'
+               value={maxFloor}
+               className={classes.textBox}
+               helperText='מטר'
                InputLabelProps={{ shrink: true }}
                multiline={false} label='מפלס הכניסה לקומה הגבוהה ביותר המיועדת לאיכלוס'
                onChange={() => setMaxFloor(+event.target.value)} />
@@ -156,7 +179,7 @@ export default function Buildings() {
                id='minFloor' name='minFloor'
                type='number'
                className={classes.textBox}
-               ref={minFloorInput}
+               inputRef={minFloorInput}
                helperText='מטר'
                InputLabelProps={{ shrink: true }}
                multiline={false} label='מפלס הרצפה הנמוכה ביותר במבנה' />
@@ -165,27 +188,29 @@ export default function Buildings() {
                   id='residence'
                   name='residence'
                   label='בנין מגורים'
-                  ref={residenceChk}
-                  control={<Checkbox />}
+                  control={<Checkbox checked={residence} onChange={() => setResidence(!residence)} />}
                />
                <FormControlLabel
                   id='crowding'
                   name='crowding'
                   label='בנין להתקהלות'
-                  ref={crowdingChk}
-                  control={<Checkbox />}
+                  control={<Checkbox checked={crowding} onChange={() => setCrowding(!crowding)} />}
                />
             </div>
 
          </div>
          <div className={classes.buildingCol2}>
-            <div className={classes.BuildingType}>
-               <label className={classes.lblType}>{buildingType ? buildingType.type : 'סוג בנין'}</label>
-               {buildingType ? buildingType.definition : ''}
-            </div>
+            {
+               (buildingType && buildingType.definition) &&
+               <div className={classes.BuildingType}>
+                  <label className={classes.lblType}>{buildingType ? buildingType.type : 'סוג בנין'}</label>
+                  {buildingType ? buildingType.definition : ''}
+               </div>
+            }
+
          </div>
          <div className={classes.buildingView}>
-            <BuildingsList buildings={buildings}>
+            <BuildingsList onSelectBuildnig={onSelectBuildnig} buildings={buildings}>
 
             </BuildingsList>
 
@@ -193,9 +218,16 @@ export default function Buildings() {
 
          <Button variant='contained'
             className={`${classes.SubmitBuilding} ${classes.button} `}
-            onClick={saveBuilding}>{id ? 'עדכן בנין' : 'הוסף בנין'}</Button>
+            onClick={saveBuilding}>{buildingId ? 'עדכן בנין' : 'הוסף בנין'}</Button>
       </form>
    )
 }
+
+// TODO:
+// export async function getStaticsProps(context) {
+//    const {params} =context;
+//    const projectId=
+
+// }
 
 
