@@ -14,6 +14,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { FormControlLabel, Checkbox, Button } from '@mui/material';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import Tooltip from '@mui/material/Tooltip';
 import { useState } from 'react';
 import classes from './buildingsList.module.css';
 const BuildingsList = (props) => {
@@ -26,7 +28,8 @@ const BuildingsList = (props) => {
       <Table sx={{ minWidth: 650, background: 'white', borderRadius: '5px' }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>ערוך</TableCell>
+            <TableCell>עריכת בנין</TableCell>
+            <TableCell>הוספת קומה</TableCell>
             <TableCell>שם\תאור בנין</TableCell>
             <TableCell align="center">מספר קומות</TableCell>
             <TableCell align="center">מפלס הקומה הקובעת</TableCell>
@@ -40,14 +43,27 @@ const BuildingsList = (props) => {
           {props?.buildings.map((row) => (
             <TableRow key={row._id} sx={{ '& > *': { borderBottom: 'unset' } }}>
               <TableCell>
-                <IconButton
-                  aria-label="edit"
-                  size="small"
-                  color="secondary"
-                  onClick={() => props.onSelectBuildnig(row)}
-                >
-                  {<EditIcon />}
-                </IconButton>
+                <Tooltip title="ערוך בנין">
+                  <IconButton
+                    aria-label="edit"
+                    size="small"
+                    color="secondary"
+                    onClick={() => props.onSelectBuildnig(row)}
+                  >
+                    {<EditIcon />}
+                  </IconButton>
+                </Tooltip>
+              </TableCell>
+              <TableCell>
+                <Tooltip title="הוסף קומה TBD">
+                  <IconButton
+                    aria-label="add floor"
+                    size="small"
+                    color="secondary"
+                  >
+                    {<PlaylistAddIcon />}
+                  </IconButton>
+                </Tooltip>
               </TableCell>
               <TableCell sx={{ display: 'none' }}>{row._id}</TableCell>
               <TableCell component="th" scope="row">
@@ -60,12 +76,12 @@ const BuildingsList = (props) => {
               <TableCell align="center"><FormControlLabel
 
                 checked={row.residence}
-                control={<Checkbox  color="secondary" />}
+                control={<Checkbox color="secondary" />}
               />
               </TableCell>
               <TableCell align="center"><FormControlLabel
                 checked={row.crowding}
-                control={<Checkbox  color="secondary" />}
+                control={<Checkbox color="secondary" />}
               /></TableCell>
               <TableCell>
                 <IconButton

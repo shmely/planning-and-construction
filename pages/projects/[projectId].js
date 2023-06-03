@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import classes from './project.module.css';
 import { TextField, Button } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
+import Tooltip from '@mui/material/Tooltip';
 
 
 
@@ -84,7 +85,9 @@ export default function Project() {
                         ref={addressInput} />
                     <div className={classes.submitProject}>
                         <Button color="secondary" onClick={saveProject} variant="contained" className={classes.button}>{addUpdateProjectBtn}</Button>
+                        <Tooltip title="עבור להוספת בינינים">
                         <Button color="secondary" onClick={moveToBuilding} disabled={nextButtonDisabeled} variant="contained" className={classes.button}>הבא</Button>
+                        </Tooltip>
                     </div>
 
                 </div>
