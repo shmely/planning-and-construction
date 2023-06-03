@@ -1,6 +1,25 @@
 
 import { connectToDatabase } from '../../lib/db';
 const ObjectId = require('mongodb').ObjectId
+export async function getProjects() {
+    const client = await connectToDatabase();
+    const projectTable = client.db('planning-and-construction').collection('projects');
+
+    const documents = await projectTable.find().toArray();
+
+    const parsedDocuments = documents.map(document => {
+        return {
+            ...document,
+            _id: document._id.toString()
+        };
+    });
+
+    client.close();
+
+
+    return parsedDocuments;
+
+}
 
 async function handler(req, res) {
     const client = await connectToDatabase();
@@ -40,21 +59,8 @@ async function handler(req, res) {
     }
     if (req.method === 'GET') {
         try {
-            console.log('in the backednd')
-            const projectTable = client.db('planning-and-construction').collection('projects');
 
-            const documents = await projectTable.find({}).toArray(function (err, documents) {
-                if (err) {
-                    console.error('Error retrieving documents:', err);
-                    return;
-                }
-                return documents;
-
-
-
-            });
-            documents.forEach(document => console.log(document));
-            res.status(200).json(documents);
+            res.status(200).json(await getProjects());
             client.close()
 
         } catch (error) {

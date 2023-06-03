@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import classes from './project.module.css';
 import Link from 'next/link';
+import { getProjects } from '../api/projects';
 const projects = ({ projects }) => {
 
     if (!projects)
@@ -49,43 +50,23 @@ const projects = ({ projects }) => {
 export const getStaticProps = async () => {
 
     try {
-        const response = await fetch('http://localhost:3000/api/projects', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-
-
-
-        if (response.status === 200) {
-            const projects = await response.json();
-            console.log(projects);
-            console.log(projects);
-            return {
-                props: { projects },
-                revalidate: 10
-            }
+        console.log('vfdvdfs');
+        console.log(getProjects);
+        const projects = await getProjects();
+        console.log('testtttttttttttttttttt')
+        console.log(projects)
+        return {
+            props: { projects },
+            revalidate: 10
         }
-        else {
-            console.log('not 200')
-            return {
-                props: {},
-                revalidate: 10
-            }
-
-        }
-
-    } catch (error) {
+    }
+    catch (error) {
         console.log(error);
         return {
             props: {},
             revalidate: 10
         }
-
     }
-
-
 }
 
 
