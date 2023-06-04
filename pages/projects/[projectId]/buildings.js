@@ -4,8 +4,12 @@ import classes from './buildings.module.css';
 import { TextField } from '@mui/material';
 import { FormControlLabel, Checkbox, Button } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-import BuildingsList from '../../../../components/building-list/buildingsList';
-export default function Buildings() {
+import BuildingsList from '../../../components/building-list/buildingsList';
+import { getProjects } from '../../api/projects';
+import { getBuildingsByProjectId } from '../../api/buildings';
+
+export default function Buildings(props) {
+   const { loadedBuildings, prjId } = props;
    const router = useRouter();
    const [maxFloor, setMaxFloor] = useState(0);
    const [baseFloorLevel, setBaseFloorLevel] = useState(0);
@@ -33,6 +37,16 @@ export default function Buildings() {
 
       }
    }
+   //console.log(`BUILDINGS: ${props}`)
+   useEffect(() => {
+      //console.log(`BUILDINGS: ${props}`)
+      if (loadedBuildings) {
+         //console.log(`BUILDINGSssssssssssssssssss: ${props}`)
+         setBuildings(loadedBuildings);
+      }
+      if (prjId) setProjectId(prjId);
+
+   }, [loadedBuildings])
 
 
    const onSelectBuildnig = (building) => {
@@ -60,16 +74,6 @@ export default function Buildings() {
       return null;
    }
 
-   useEffect(() => {
-      if (router.isReady) {
-         const prjId = router.query.projectId;
-         if (prjId) {
-            setProjectId(prjId)
-         }
-      }
-
-
-   }, [router.isReady])
 
 
    const saveBuilding = async (event) => {
@@ -238,11 +242,45 @@ export default function Buildings() {
    )
 }
 
-// TODO:
-// export async function getStaticsProps(context) {
-//    const {params} =context;
-//    const projectId=
+export const getStaticPaths = async () => {
+   const projects = await getProjects();
+   const ids = projects.map(project => project._id);
+   const params = ids.map((id) => ({ params: { projectId: id } }));
 
-// }
+   return {
+      paths: params,
+      fallback: 'blocking'
+   }
+
+}
+
+export const getStaticProps = async (context) => {
+   console.log(context)
+   const { params } = context;
+   const projectId = params.projectId;
+   console.log(`projectId: ${projectId}`)
+   try {
+
+
+      const buildings = await getBuildingsByProjectId(projectId);
+
+      console.log(buildings);
+      return {
+         props: {
+            prjId: projectId,
+            loadedBuildings: JSON.parse(JSON.stringify(buildings))
+         },
+      };
+   }
+   catch (error) {
+      console.log(error);
+      return {
+         props: {
+            error
+         },
+
+      }
+   }
+}
 
 

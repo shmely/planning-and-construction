@@ -5,7 +5,7 @@ export async function getProjects() {
     const client = await connectToDatabase();
     const projectTable = client.db('planning-and-construction').collection('projects');
 
-    const documents = await projectTable.find().toArray();
+    const documents = await projectTable.find().limit(50).toArray();
 
     const parsedDocuments = documents.map(document => {
         return {
