@@ -4,31 +4,46 @@ import classes from './project.module.css';
 import { TextField, Button } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip from '@mui/material/Tooltip';
+import { getProjects } from '../api/projects';
 
 
 
-export default function Project() {
+export default function Project(props) {
     const router = useRouter();
-    const [project, setProject] = useState({ name: '', address: '' });
+    const [currentProject, setCurrentProject] = useState(null);
     const nameInput = useRef();
     const addressInput = useRef();
     const [isLoading, setIsLoading] = useState(false);
+    const { error, project } = props;
 
+    useEffect(() => {
+        if (error) {
+            alert(error);
+        } else if (project) {
+            setCurrentProject(project)
+            nameInput.current.value = project.name;
+            addressInput.current.value = project.address;
+        }
+        else {
+            setCurrentProject({ name: '', address: '' });
+        }
+
+    }, [error, project])
     const saveProject = async (event) => {
         event.preventDefault();
         setIsLoading(true);
         debugger;
-        const method = project._id ? 'PUT' : 'POST'
+        const method = currentProject._id ? 'PUT' : 'POST'
         const response = await fetch('/api/projects', {
             method,
-            body: JSON.stringify({ name: nameInput.current.value, address: addressInput.current.value }),
+            body: JSON.stringify({ _id: currentProject._id, name: nameInput.current.value, address: addressInput.current.value }),
             headers: {
                 'Content-Type': 'application/json'
             }
         });
         if (response.status === 201) {
             const savedProj = await response.json();
-            setProject(savedProj);
+            setCurrentProject(savedProj);
             const projectRoute = `/projects/${savedProj._id}`
             setIsLoading(false);
             if (router.asPath !== projectRoute) {
@@ -45,11 +60,11 @@ export default function Project() {
     const moveToBuilding = () => {
         router.push(`${router.asPath}/buildings`);
     }
-    if (!project) {
+    if (!currentProject) {
         return (<h1>Loading...</h1>)
     }
-    const addUpdateProjectBtn = project._id ? 'עדכן פרויקט' : 'הוסף פרויקט';
-    const nextButtonDisabeled = project._id ? false : true;
+    const addUpdateProjectBtn = currentProject._id ? 'עדכן פרויקט' : 'הוסף פרויקט';
+    const nextButtonDisabeled = currentProject._id ? false : true;
 
     return (
         <main className={classes.projectFormWrapper}>
@@ -97,5 +112,43 @@ export default function Project() {
             </form>
         </main>
     )
+}
+export const getStaticPaths = async () => {
+    const projects = await getProjects();
+    const ids = projects.map(project => project._id);
+    const params = ids.map((id) => ({ params: { projectId: id } }));
+
+    return {
+        paths: params,
+        fallback: 'blocking'
+    }
+
+}
+
+
+export const getStaticProps = async (context) => {
+    const { params } = context;
+    const projectId = params.projectId;
+    try {
+
+        const projects = await getProjects();
+
+        const project = projects.find((project) => project._id === projectId);
+        console.log(project);
+        return {
+            props: {
+                project,
+            },
+        };
+    }
+    catch (error) {
+        console.log(error);
+        return {
+            props: {
+                error
+            },
+
+        }
+    }
 }
 

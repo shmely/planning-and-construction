@@ -50,10 +50,9 @@ const projects = ({ projects }) => {
 export const getStaticProps = async () => {
 
     try {
-        console.log('vfdvdfs');
+        
         console.log(getProjects);
-        const projects = await getProjects();
-        console.log('testtttttttttttttttttt')
+        const projects = await getProjects();        
         console.log(projects)
         return {
             props: { projects },
