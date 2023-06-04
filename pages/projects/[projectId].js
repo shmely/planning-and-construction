@@ -11,32 +11,38 @@ import { getProjects } from '../api/projects';
 export default function Project(props) {
     const router = useRouter();
     const [currentProject, setCurrentProject] = useState(null);
-    const nameInput = useRef();
-    const addressInput = useRef();
     const [isLoading, setIsLoading] = useState(false);
     const { error, project } = props;
 
     useEffect(() => {
         if (error) {
-            alert(error);
-        } else if (project) {
-            setCurrentProject(project)
-            nameInput.current.value = project.name;
-            addressInput.current.value = project.address;
-        }
-        else {
-            setCurrentProject({ name: '', address: '' });
+            return <h1 style={{ color: 'red' }}>{error}</h1>
         }
 
-    }, [error, project])
+        if (!project) {
+            return (<CircularProgress color="secondary" sx={{ position: 'absolute', top: '50%', left: '50%' }} />)
+        }
+        setCurrentProject(project)
+
+    }, [project, error])
+
+
+    const onChange = (event) => {
+        const key = event.target.name;
+        const updated = { ...currentProject };
+        updated[key] = event.target.value;
+        setCurrentProject(updated);
+    }
+
+
     const saveProject = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-        debugger;
+
         const method = currentProject._id ? 'PUT' : 'POST'
         const response = await fetch('/api/projects', {
             method,
-            body: JSON.stringify({ _id: currentProject._id, name: nameInput.current.value, address: addressInput.current.value }),
+            body: JSON.stringify(currentProject),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -61,8 +67,9 @@ export default function Project(props) {
         router.push(`${router.asPath}/buildings`);
     }
     if (!currentProject) {
-        return (<h1>Loading...</h1>)
+        return (<CircularProgress color="secondary" sx={{ position: 'absolute', top: '50%', left: '50%' }} />)
     }
+
     const addUpdateProjectBtn = currentProject._id ? 'עדכן פרויקט' : 'הוסף פרויקט';
     const nextButtonDisabeled = currentProject._id ? false : true;
 
@@ -84,9 +91,10 @@ export default function Project(props) {
                         type='text'
                         InputLabelProps={{ shrink: true }}
                         className={classes.textBox}
+                        value={currentProject.name}
                         multiline={false}
                         placeholder='הזן שם פרויקט'
-                        inputRef={nameInput}
+                        onChange={onChange}
                     />
                     <TextField
                         id='address'
@@ -96,9 +104,12 @@ export default function Project(props) {
                         color="secondary"
                         className={classes.textBox}
                         multiline={true}
+                        InputLabelProps={{ shrink: true }}
+                        value={currentProject.address}
                         rows={3}
                         placeholder='הזן כתובת'
-                        inputRef={addressInput} />
+                        onChange={onChange}
+                    />
                     <div className={classes.submitProject}>
                         <Button color="secondary" onClick={saveProject} variant="contained" className={classes.button}>{addUpdateProjectBtn}</Button>
                         <Tooltip title="עבור להוספת בינינים">
@@ -131,7 +142,15 @@ export const getStaticProps = async (context) => {
     const projectId = params.projectId;
     try {
 
+        if (projectId === 'new') {
+            return {
+                props: {
+                    project: { _id: null, name: '', address: '' }
+                },
+            };
+        }
         const projects = await getProjects();
+
 
         const project = projects.find((project) => project._id === projectId);
         console.log(project);
