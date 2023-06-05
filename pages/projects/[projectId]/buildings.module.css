@@ -60,6 +60,7 @@
 .button {
   width: 120px;
   margin-inline-end: 10px !important;
+  max-height: 36px;
 }
 
 .BuildingType {
