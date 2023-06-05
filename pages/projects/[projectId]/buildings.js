@@ -270,6 +270,7 @@ export const getStaticProps = async (context) => {
             prjId: projectId,
             loadedBuildings: JSON.parse(JSON.stringify(buildings))
          },
+         revalidate: 60
       };
    }
    catch (error) {
