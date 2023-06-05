@@ -1,7 +1,25 @@
 import { connectToDatabase } from '../../lib/db';
 const ObjectId = require('mongodb').ObjectId
 
+export async function getBuildings() {
+    const client = await connectToDatabase();
+    const buildingTable = client.db('planning-and-construction').collection('buildings');
 
+    const documents = await buildingTable.find().toArray();
+
+    const parsedDocuments = documents.map(document => {
+        return {
+            ...document,
+            _id: document._id.toString()
+        };
+    });
+
+    client.close();
+
+
+    return parsedDocuments;
+
+}
 export async function getBuildingsByProjectId(id) {
     const client = await connectToDatabase();
     const buildingTable = client.db('planning-and-construction').collection('buildings');

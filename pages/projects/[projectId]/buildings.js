@@ -6,7 +6,7 @@ import { FormControlLabel, Checkbox, Button } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import BuildingsList from '../../../components/building-list/buildingsList';
 import { getProjects } from '../../api/projects';
-import { getBuildingsByProjectId } from '../../api/buildings';
+import { getBuildings } from '../../api/buildings';
 
 export default function Buildings(props) {
    const { loadedBuildings, prjId } = props;
@@ -262,13 +262,16 @@ export const getStaticProps = async (context) => {
    try {
 
 
-      const buildings = await getBuildingsByProjectId(projectId);
-
+      const buildings = await getBuildings();
+      console.log('all buildings');
       console.log(buildings);
+      const projectBuildings = buildings.filter((building) => building.projectId === projectId);
+      console.log('filter buildings');
+      console.log(projectBuildings);
       return {
          props: {
             prjId: projectId,
-            loadedBuildings: JSON.parse(JSON.stringify(buildings))
+            loadedBuildings: JSON.parse(JSON.stringify(projectBuildings))
          },
          revalidate: 10
       };
