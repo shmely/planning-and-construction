@@ -86,14 +86,14 @@ export const getStaticProps = async () => {
         console.log(projects)
         return {
             props: { projects },
-            revalidate: 60
+            revalidate: 10
         }
     }
     catch (error) {
         console.log(error);
         return {
             props: {},
-            revalidate: 60
+            revalidate: 20
         }
     }
 }
