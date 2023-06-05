@@ -1,9 +1,11 @@
-import { Fragment } from 'react';
+import { Fragment, Suspense } from 'react';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import MainNavigation from './main-navigation';
 import { prefixer } from 'stylis';
 import rtlPlugin from 'stylis-plugin-rtl';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 
 const cacheRtl = createCache({
@@ -17,7 +19,9 @@ function Layout(props) {
     <Fragment>
       <CacheProvider value={cacheRtl}>
         <MainNavigation />
-        <main>{props.children}</main>
+        <Suspense fallback={<CircularProgress color="secondary" sx={{ position: 'absolute', top: '50%', left: '50%' }} />}>
+          <main>{props.children}</main>
+        </Suspense>
       </CacheProvider>
     </Fragment >
   );

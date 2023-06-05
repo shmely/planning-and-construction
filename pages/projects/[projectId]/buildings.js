@@ -5,7 +5,6 @@ import { TextField } from '@mui/material';
 import { FormControlLabel, Checkbox, Button } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import BuildingsList from '../../../components/building-list/buildingsList';
-// import { getProjects } from '../../api/projects';
 import { getBuildingsByProjectId } from '../../api/buildings';
 
 export default function Buildings(props) {
