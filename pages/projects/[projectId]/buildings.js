@@ -5,7 +5,7 @@ import { TextField } from '@mui/material';
 import { FormControlLabel, Checkbox, Button } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import BuildingsList from '../../../components/building-list/buildingsList';
-import { getBuildingsByProjectId } from '../../api/buildings';
+import { getProjects } from '../../api/projects';
 
 export default function Buildings(props) {
    const { loadedBuildings, prjId } = props;
@@ -241,19 +241,19 @@ export default function Buildings(props) {
    )
 }
 
-// export const getStaticPaths = async () => {
-//    const projects = await getProjects();
-//    const ids = projects.map(project => project._id);
-//    const params = ids.map((id) => ({ params: { projectId: id } }));
+export const getStaticPaths = async () => {
+   const projects = await getProjects();
+   const ids = projects.map(project => project._id);
+   const params = ids.map((id) => ({ params: { projectId: id } }));
 
-//    return {
-//       paths: params,
-//       fallback: 'blocking'
-//    }
+   return {
+      paths: params,
+      fallback: 'blocking'
+   }
 
-// }
+}
 
-export const getServerSideProps = async (context) => {
+export const getStaticProps = async (context) => {
    console.log(context)
    const { params } = context;
    const projectId = params.projectId;
@@ -261,7 +261,8 @@ export const getServerSideProps = async (context) => {
    try {
 
 
-      const buildings = await getBuildingsByProjectId(projectId);
+      const data = await getProjects();
+      buildings = data.buildings.filter(building => building.projectId === projectId)
 
       console.log(buildings);
       return {
@@ -269,6 +270,7 @@ export const getServerSideProps = async (context) => {
             prjId: projectId,
             loadedBuildings: JSON.parse(JSON.stringify(buildings))
          },
+         revalidate: 10
       };
    }
    catch (error) {

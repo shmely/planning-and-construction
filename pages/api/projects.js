@@ -5,9 +5,20 @@ export async function getProjects() {
     const client = await connectToDatabase();
     const projectTable = client.db('planning-and-construction').collection('projects');
 
-    const documents = await projectTable.find().limit(50).toArray();
+    const projects = await projectTable.find().toArray();
 
-    const parsedDocuments = documents.map(document => {
+    const parsedProjects = documents.map(document => {
+        return {
+            ...document,
+            _id: document._id.toString()
+        };
+    });
+
+    const buildingTable = client.db('planning-and-construction').collection('buildings');
+
+    const buildings = await buildingTable.find().toArray();
+
+    const parsedBuildings = documents.map(document => {
         return {
             ...document,
             _id: document._id.toString()
@@ -17,7 +28,7 @@ export async function getProjects() {
     client.close();
 
 
-    return parsedDocuments;
+    return return { projects: parsedProjects, buildings: parsedBuildings };
 
 }
 
