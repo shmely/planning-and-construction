@@ -224,7 +224,11 @@ export default function Buildings(props) {
                      label='בנין להתקהלות'
                      control={<Checkbox color="secondary" checked={crowding} onChange={() => setCrowding(!crowding)} />}
                   />
+
                </div>
+               <Button variant='contained' color="secondary"
+                  className={classes.button}
+                  onClick={saveBuilding}>{buildingId ? 'עדכן בנין' : 'הוסף בנין'}</Button>
 
             </div>
             <div className={classes.buildingCol2}>
@@ -241,9 +245,7 @@ export default function Buildings(props) {
                <BuildingsList onSelectBuildnig={onSelectBuildnig} buildings={buildings}></BuildingsList>
             </div>
 
-            <Button variant='contained' color="secondary"
-               className={`${classes.SubmitBuilding} ${classes.button} `}
-               onClick={saveBuilding}>{buildingId ? 'עדכן בנין' : 'הוסף בנין'}</Button>
+
          </form>
       </div>
    )
