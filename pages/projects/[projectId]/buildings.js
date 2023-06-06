@@ -37,14 +37,11 @@ export default function Buildings(props) {
       }
    }
 
-   const refreshData = () => {
-      router.replace(router.asPath);
-   }
-   //console.log(`BUILDINGS: ${props}`)
+   
+   
    useEffect(() => {
-      //console.log(`BUILDINGS: ${props}`)
-      if (loadedBuildings) {
-         //console.log(`BUILDINGSssssssssssssssssss: ${props}`)
+      
+      if (loadedBuildings) {         
          setBuildings(loadedBuildings);
       }
       if (prjId) setProjectId(prjId);
@@ -103,7 +100,7 @@ export default function Buildings(props) {
          }
       });
       if (response.status === 201) {
-         refreshData();
+        
          const savedBuilding = await response.json();
          const updated = [...buildings]
          if (method === 'POST')
