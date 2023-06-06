@@ -8,7 +8,8 @@ export default async function handler(req, res) {
     try {
         // this should be the actual path not a rewritten path
         // e.g. for "/products/[slug]" this should be "/products/1"  
-        await res.revalidate(req.query.path)
+        await res.revalidate(req.query.path);
+        await res.revalidate('/projects');
         return res.json({ revalidated: true })
 
     } catch (err) {
