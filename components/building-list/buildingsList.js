@@ -17,11 +17,15 @@ import { FormControlLabel, Checkbox, Button } from '@mui/material';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Tooltip from '@mui/material/Tooltip';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useState } from 'react';
 import classes from './buildingsList.module.css';
 const BuildingsList = (props) => {
   const [open, setOpen] = useState(false);
 
+  if (!props.buildings) {
+    return (<CircularProgress color="secondary" sx={{ position: 'absolute', top: '50%', left: '50%' }} />)
+  }
 
 
   return (
@@ -49,9 +53,10 @@ const BuildingsList = (props) => {
                 <TableCell>
                   <Tooltip title="מחק בנין">
                     <IconButton
-                      aria-label="edit"
+                      aria-label="delete"
                       size="small"
                       color="secondary"
+                      onClick={() => props.onDeletBuilding(row._id)}
                     >
                       {<DeleteIcon />}
                     </IconButton>
@@ -81,9 +86,7 @@ const BuildingsList = (props) => {
                   </Tooltip>
                 </TableCell>
                 <TableCell sx={{ display: 'none' }}>{row._id}</TableCell>
-                <TableCell component="th" scope="row">
-                  {row.description}
-                </TableCell>
+                <TableCell>{row.description}</TableCell>
                 <TableCell align="center">{row.floors}</TableCell>
                 <TableCell align="center">{row.baseFloorLevel}</TableCell>
                 <TableCell align="center">{row.maxFloor}</TableCell>

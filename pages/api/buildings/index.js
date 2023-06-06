@@ -1,4 +1,4 @@
-import { connectToDatabase } from '../../lib/db';
+import { connectToDatabase } from '../../../lib/db';
 const ObjectId = require('mongodb').ObjectId
 
 export async function getBuildings() {
@@ -72,6 +72,7 @@ async function handler(req, res) {
             res.status(500).json(error);
         }
     }
+    
 
 }
 

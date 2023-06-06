@@ -4,7 +4,7 @@ import classes from './project.module.css';
 import { TextField, Button } from "@mui/material";
 import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip from '@mui/material/Tooltip';
-import { getProjects } from '../api/projects';
+import { getProjects } from '../api/projects/index';
 
 
 

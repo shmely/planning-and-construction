@@ -1,5 +1,5 @@
 
-import { connectToDatabase } from '../../lib/db';
+import { connectToDatabase } from '../../../lib/db';
 const ObjectId = require('mongodb').ObjectId
 export async function getProjects() {
     const client = await connectToDatabase();

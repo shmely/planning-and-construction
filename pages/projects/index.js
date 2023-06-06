@@ -5,7 +5,7 @@ import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
 import classes from './project.module.css';
 import Link from 'next/link';
-import { getProjects } from '../api/projects';
+import { getProjects } from '../api/projects/index';
 import ClearIcon from '@mui/icons-material/Clear';
 const projects = ({ projects }) => {
     const [filterd, setFilterd] = useState([]);

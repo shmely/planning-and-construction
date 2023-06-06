@@ -5,7 +5,7 @@ import { TextField } from '@mui/material';
 import { FormControlLabel, Checkbox, Button } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import BuildingsList from '../../../components/building-list/buildingsList';
-import { getProjects } from '../../api/projects';
+import { getProjects } from '../../api/projects/index';
 
 export default function Buildings(props) {
    const { loadedBuildings, prjId } = props;
@@ -39,6 +39,8 @@ export default function Buildings(props) {
 
 
 
+
+
    useEffect(() => {
 
       if (loadedBuildings) {
@@ -46,7 +48,7 @@ export default function Buildings(props) {
       }
       if (prjId) setProjectId(prjId);
 
-   }, [loadedBuildings])
+   }, [loadedBuildings]);
 
 
    const onSelectBuildnig = (building) => {
@@ -73,8 +75,30 @@ export default function Buildings(props) {
       }
       return null;
    }
+   const onDeletBuilding = async (buildingId) => {
+      const areYouSure = confirm("Press a button!");
+      if (areYouSure) {
+         setIsLoading(true);
+         const response = await fetch(`/api/buildings/${buildingId}`, {
+            method: 'DELETE'
+         });
+         if (response.status === 200) {
+            await refreshData();
+            const bb = [...buildings];
+            console.log(bb);
+            const cc = bb.filter(b => b._id !== buildingId);
+            console.log(cc);
+            setBuildings(cc);
+            setIsLoading(false);
+         }
+         else {
+            console.log('error delete building')
+            setIsLoading(false);
+         }
 
 
+      }
+   }
 
    const saveBuilding = async (event) => {
       event.preventDefault();
@@ -242,7 +266,7 @@ export default function Buildings(props) {
 
             </div>
             <div className={classes.buildingView}>
-               <BuildingsList onSelectBuildnig={onSelectBuildnig} buildings={buildings}></BuildingsList>
+               <BuildingsList onSelectBuildnig={onSelectBuildnig} onDeletBuilding={onDeletBuilding} buildings={buildings}></BuildingsList>
             </div>
 
 
