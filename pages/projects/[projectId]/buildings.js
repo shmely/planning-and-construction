@@ -36,6 +36,10 @@ export default function Buildings(props) {
 
       }
    }
+
+   const refreshData = () => {
+      router.replace(router.asPath);
+   }
    //console.log(`BUILDINGS: ${props}`)
    useEffect(() => {
       //console.log(`BUILDINGS: ${props}`)
@@ -99,6 +103,7 @@ export default function Buildings(props) {
          }
       });
       if (response.status === 201) {
+         refreshData();
          const savedBuilding = await response.json();
          const updated = [...buildings]
          if (method === 'POST')
@@ -270,7 +275,7 @@ export const getStaticProps = async (context) => {
             prjId: projectId,
             loadedBuildings: JSON.parse(JSON.stringify(buildings))
          },
-         revalidate: 10
+         revalidate: 120
       };
    }
    catch (error) {
@@ -279,6 +284,7 @@ export const getStaticProps = async (context) => {
          props: {
             error
          },
+         revalidate: 120
 
       }
    }
