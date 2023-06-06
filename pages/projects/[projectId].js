@@ -13,9 +13,7 @@ export default function Project(props) {
     const [currentProject, setCurrentProject] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const { error, project } = props;
-    const refreshData = () => {
-        router.replace(router.asPath);
-    }
+   
     useEffect(() => {
         if (error) {
             return <h1 style={{ color: 'red' }}>{error}</h1>
@@ -50,7 +48,7 @@ export default function Project(props) {
             }
         });
         if (response.status === 201) {
-            refreshData();
+            
             const savedProj = await response.json();
             setCurrentProject(savedProj);
             const projectRoute = `/projects/${savedProj._id}`
