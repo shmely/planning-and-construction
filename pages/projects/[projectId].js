@@ -64,11 +64,12 @@ export default function Project(props) {
 
     }
     const refreshData = async () => {
-        const url = `/api/revalidate/${router.asPath}`;
+        const url = `/api/revalidate?path=${router.asPath}`
         console.log(url);
-        await fetch(`/api/revalidate/${router.asPath}`, { method: 'GET' });
+        await fetch(url, { method: 'GET' });
 
     }
+
 
     const moveToBuilding = () => {
         router.push(`${router.asPath}/buildings`);
