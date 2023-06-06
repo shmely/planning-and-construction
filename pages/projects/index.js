@@ -65,7 +65,7 @@ const projects = ({ projects }) => {
                             <div className={classes.projectName}>{`${project.name}:    `}</div>
                             <Link className={classes.link} href={`/projects/${project._id}`}>לפרויקט</Link>
                             <span className={classes.projectName}>{`\t | \t`}</span>
-                            <Link className={classes.link} href={`/projects/${project._id}/buildings`}>לבינינים </Link>
+                            <Link className={classes.link} prefetch={false} href={`/projects/${project._id}/buildings`}>לבינינים </Link>
                         </li>
                     ))
                 }
