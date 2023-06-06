@@ -7,7 +7,7 @@ export async function getProjects() {
 
     const projects = await projectTable.find().toArray();
 
-    const parsedProjects = documents.map(document => {
+    const parsedProjects = projects.map(document => {
         return {
             ...document,
             _id: document._id.toString()
@@ -18,7 +18,7 @@ export async function getProjects() {
 
     const buildings = await buildingTable.find().toArray();
 
-    const parsedBuildings = documents.map(document => {
+    const parsedBuildings = buildings.map(document => {
         return {
             ...document,
             _id: document._id.toString()
@@ -28,7 +28,7 @@ export async function getProjects() {
     client.close();
 
 
-    return return { projects: parsedProjects, buildings: parsedBuildings };
+    return { projects: parsedProjects, buildings: parsedBuildings };
 
 }
 

@@ -242,8 +242,8 @@ export default function Buildings(props) {
 }
 
 export const getStaticPaths = async () => {
-   const projects = await getProjects();
-   const ids = projects.map(project => project._id);
+   const data = await getProjects();
+   const ids = data.projects.map(project => project._id);
    const params = ids.map((id) => ({ params: { projectId: id } }));
 
    return {
@@ -262,7 +262,7 @@ export const getStaticProps = async (context) => {
 
 
       const data = await getProjects();
-      buildings = data.buildings.filter(building => building.projectId === projectId)
+      const buildings = data.buildings.filter(building => building.projectId === projectId)
 
       console.log(buildings);
       return {

@@ -125,8 +125,8 @@ export default function Project(props) {
     )
 }
 export const getStaticPaths = async () => {
-    const projects = await getProjects();
-    const ids = projects.map(project => project._id);
+    const data = await getProjects();
+    const ids = data.projects.map(project => project._id);
     const params = ids.map((id) => ({ params: { projectId: id } }));
 
     return {
@@ -149,10 +149,10 @@ export const getStaticProps = async (context) => {
                 },
             };
         }
-        const projects = await getProjects();
+        const data = await getProjects();
 
 
-        const project = projects.find((project) => project._id === projectId);
+        const project = data.projects.find((project) => project._id === projectId);
         console.log(project);
         return {
             props: {
