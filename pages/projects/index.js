@@ -85,15 +85,15 @@ export const getStaticProps = async () => {
         const data = await getProjects();
         console.log(projects)
         return {
-            props: { projects: data.projects },
-            revalidate: 120
+            props: { projects: data.projects }
+            
         }
     }
     catch (error) {
         console.log(error);
         return {
-            props: {},
-            revalidate: 120
+            props: {}
+           
         }
     }
 }

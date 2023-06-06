@@ -271,8 +271,7 @@ export const getStaticProps = async (context) => {
          props: {
             prjId: projectId,
             loadedBuildings: JSON.parse(JSON.stringify(buildings))
-         },
-         revalidate: 120
+         }         
       };
    }
    catch (error) {
@@ -280,9 +279,7 @@ export const getStaticProps = async (context) => {
       return {
          props: {
             error
-         },
-         revalidate: 120
-
+         }
       }
    }
 }
