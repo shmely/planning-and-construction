@@ -48,7 +48,7 @@ export default function Project(props) {
             }
         });
         if (response.status === 201) {
-            refreshData();
+            await refreshData();
             const savedProj = await response.json();
             setCurrentProject(savedProj);
             const projectRoute = `/projects/${savedProj._id}`

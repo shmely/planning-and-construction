@@ -100,7 +100,7 @@ export default function Buildings(props) {
          }
       });
       if (response.status === 201) {
-         refreshData();
+         await refreshData();
          const savedBuilding = await response.json();
          const updated = [...buildings]
          if (method === 'POST')
