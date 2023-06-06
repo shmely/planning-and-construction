@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     try {
         // this should be the actual path not a rewritten path
         // e.g. for "/products/[slug]" this should be "/products/1" 
-        await res.revalidate('/');
+       
         await res.revalidate('/projects');
         await res.revalidate(req.query.path);
 
@@ -17,6 +17,6 @@ export default async function handler(req, res) {
     } catch (err) {
         // If there was an error, Next.js will continue
         // to show the last successfully generated page
-        return res.status(500).send('Error revalidating')
+        return res.status(500).send(`Error revalidating: ${err}`)
     }
 }
