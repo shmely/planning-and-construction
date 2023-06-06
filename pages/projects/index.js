@@ -37,6 +37,8 @@ const projects = ({ projects }) => {
 
     }
 
+    
+
     return (
         <main className={classes.projectListCont}>
             <Paper

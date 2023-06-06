@@ -37,11 +37,11 @@ export default function Buildings(props) {
       }
    }
 
-   
-   
+
+
    useEffect(() => {
-      
-      if (loadedBuildings) {         
+
+      if (loadedBuildings) {
          setBuildings(loadedBuildings);
       }
       if (prjId) setProjectId(prjId);
@@ -100,7 +100,7 @@ export default function Buildings(props) {
          }
       });
       if (response.status === 201) {
-        
+         refreshData();
          const savedBuilding = await response.json();
          const updated = [...buildings]
          if (method === 'POST')
@@ -127,6 +127,12 @@ export default function Buildings(props) {
       }
 
 
+
+   }
+   const refreshData = async () => {
+      const url = `/api/revalidate/${router.asPath}`;
+      console.log(url);
+      await fetch(`/api/revalidate/${router.asPath}`, { method: 'GET' });
 
    }
 
@@ -271,7 +277,7 @@ export const getStaticProps = async (context) => {
          props: {
             prjId: projectId,
             loadedBuildings: JSON.parse(JSON.stringify(buildings))
-         }         
+         }
       };
    }
    catch (error) {

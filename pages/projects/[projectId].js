@@ -13,7 +13,7 @@ export default function Project(props) {
     const [currentProject, setCurrentProject] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const { error, project } = props;
-   
+
     useEffect(() => {
         if (error) {
             return <h1 style={{ color: 'red' }}>{error}</h1>
@@ -48,7 +48,7 @@ export default function Project(props) {
             }
         });
         if (response.status === 201) {
-            
+            refreshData();
             const savedProj = await response.json();
             setCurrentProject(savedProj);
             const projectRoute = `/projects/${savedProj._id}`
@@ -61,6 +61,12 @@ export default function Project(props) {
             setIsLoading(false);
             console.log(response.statusText);
         }
+
+    }
+    const refreshData = async () => {
+        const url = `/api/revalidate/${router.asPath}`;
+        console.log(url);
+        await fetch(`/api/revalidate/${router.asPath}`, { method: 'GET' });
 
     }
 
@@ -125,6 +131,8 @@ export default function Project(props) {
         </main>
     )
 }
+
+
 export const getStaticPaths = async () => {
     const data = await getProjects();
     const ids = data.projects.map(project => project._id);
@@ -159,7 +167,7 @@ export const getStaticProps = async (context) => {
             props: {
                 project,
             },
-            
+
         };
     }
     catch (error) {
