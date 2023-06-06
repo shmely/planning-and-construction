@@ -1,5 +1,5 @@
 import { ObjectId } from 'bson';
-import { connectToDatabase } from '../../../../lib/db';
+import { connectToDatabase } from '../../../lib/db';
 
 export async function getProjectById(projectId) {
     console.log(`get project id ${projectId}`);
