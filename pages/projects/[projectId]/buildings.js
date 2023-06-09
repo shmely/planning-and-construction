@@ -1,8 +1,10 @@
 import { useRouter } from 'next/router';
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import classes from './buildings.module.css';
-import { TextField } from '@mui/material';
-import { FormControlLabel, Checkbox, Button } from '@mui/material';
+import TextBox from '../../../components/UI/textbox/textbox';
+import { Button } from '@mui/material';
+import AppContext from '../../../context/app-context';
+import CheckBox from '@/components/UI/checkbox/checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
 import BuildingsList from '../../../components/building-list/buildingsList';
 import { getProjects } from '../../api/projects/index';
@@ -21,23 +23,7 @@ export default function Buildings(props) {
    const [residence, setResidence] = useState(false);
    const [crowding, setCrowding] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
-   const buildingDef = {
-      '1-12': {
-         type: 'בניין רגיל',
-         definition: ''
-      },
-      '13-29': {
-         type: 'בניין גבוה',
-         definition: 'בניין גבוה – בנין שבו הפרש הגובה בין מפלס הכניסה הקובעת לבנין לבין מפלס הכניסה לקומה הגבוהה ביותר המיועדת לאכלוס, שהכניסה אליה דרך חדר מדרגות משותף, עולה על 13 מטרים'
-      },
-      '30-999': {
-         type: 'בניין רב קומות',
-         definition: 'בניין רב קומות – בנין שבו הפרש הגובה בין מפלס הכניסה הקובעת לבנין לבין מפלס הכניסה לקומה הגבוהה ביותר המיועדת לאכלוס, שהכניסה אליה דרך חדר מדרגות משותף, עולה על 29 מטרים',
-
-      }
-   }
-
-
+   const { buildingsDefentions } = useContext(AppContext);
 
 
 
@@ -62,19 +48,20 @@ export default function Buildings(props) {
       setMaxFloor(building.maxFloor);
    }
 
-
-
    const getBuildingTypeDescription = () => {
       if (maxFloor && baseFloorLevel && maxFloor >= baseFloorLevel) {
          const height = maxFloor - baseFloorLevel;
-         for (const [key, value] of Object.entries(buildingDef)) {
+         for (const [key, value] of Object.entries(buildingsDefentions)) {
             const [num1, num2] = key.split('-').map(val => parseInt(val));
-            if (height >= num1 && height <= num2)
+            if (height >= num1 && height <= num2) {
                return value
+            }
+
          }
       }
       return null;
    }
+
    const onDeletBuilding = async (buildingId) => {
       const areYouSure = confirm("Press a button!");
       if (areYouSure) {
@@ -95,7 +82,6 @@ export default function Buildings(props) {
             console.log('error delete building')
             setIsLoading(false);
          }
-
 
       }
    }
@@ -124,7 +110,7 @@ export default function Buildings(props) {
          }
       });
       if (response.status === 201) {
-         await refreshData();
+         refreshData();
          const savedBuilding = await response.json();
          const updated = [...buildings]
          if (method === 'POST')
@@ -135,15 +121,9 @@ export default function Buildings(props) {
                updated[itemIndex] = savedBuilding;
          }
          setBuildings(updated);
-         setBuildingId(null);
-         descInput.current.value = '';
-         floorsInput.current.value = 0;
-         minFloorInput.current.value = 0,
-            setMaxFloor(0);
-         setBaseFloorLevel(0);
-         setResidence(false);
-         setCrowding(false);
+         clearValues();
          setIsLoading(false);
+
 
       } else {
          setIsLoading(false);
@@ -153,11 +133,23 @@ export default function Buildings(props) {
 
 
    }
+
+   const clearValues = () => {
+      setBuildingId(null);
+      descInput.current.value = '';
+      floorsInput.current.value = 0;
+      minFloorInput.current.value = 0,
+      setMaxFloor(0);
+      setBaseFloorLevel(0);
+      setResidence(false);
+      setCrowding(false);
+
+
+   }
    const refreshData = async () => {
       const url = `/api/revalidate?path=${router.asPath}`
       console.log(url);
       await fetch(url, { method: 'GET' });
-
    }
 
    if (!projectId) {
@@ -178,53 +170,36 @@ export default function Buildings(props) {
                <h1 >הוספת מבנים</h1>
             </div>
             <div className={classes.buildingCol1}>
-               <TextField
-                  id='description'
-                  name='description'
-                  type='text'
-                  color="secondary"
+               <TextBox
                   inputRef={descInput}
-                  className={classes.textBox}
                   multiline={true}
-                  InputLabelProps={{ shrink: true }}
                   rows={3}
                   label='שם\תיאור בניין'
                   placeholder='הזן שם\תיאור בניין'
                />
-               <TextField
-                  id='floors' name='floors'
+               <TextBox
                   type='number'
                   inputRef={floorsInput}
-                  color="secondary"
-                  InputLabelProps={{ shrink: true }}
-                  className={classes.textBox}
-                  multiline={false}
                   label='מספר קומות'
                   placeholder='הזן מספר קומות'
                />
-               <TextField
-                  id='baseFloorLevel'
-                  name='baseFloorLevel'
+               <TextBox
                   type='number'
-                  color="secondary"
-                  value={baseFloorLevel}
-                  className={classes.textBox}
-                  InputLabelProps={{ shrink: true }}
                   helperText='מטר'
-                  multiline={false} label='מפלס הקומה הקובעת'
+                  multiline={false}
+                  value={baseFloorLevel}
+                  label='מפלס הקומה הקובעת'
+                  elperText='מטר'
                   placeholder='הזן מפלס הקומה הקובעת'
                   onChange={() => setBaseFloorLevel(+event.target.value)} />
-               <TextField
-                  id='maxFloor' name='maxFloor'
+               <TextBox
                   type='number'
                   value={maxFloor}
-                  color="secondary"
-                  className={classes.textBox}
                   helperText='מטר'
-                  InputLabelProps={{ shrink: true }}
-                  multiline={false} label='מפלס הכניסה לקומה הגבוהה ביותר המיועדת לאיכלוס'
+                  multiline={false}
+                  label='מפלס הכניסה לקומה הגבוהה ביותר המיועדת לאיכלוס'
                   onChange={() => setMaxFloor(+event.target.value)} />
-               <TextField
+               <TextBox
                   id='minFloor' name='minFloor'
                   type='number'
                   className={classes.textBox}
@@ -234,19 +209,15 @@ export default function Buildings(props) {
                   InputLabelProps={{ shrink: true }}
                   multiline={false} label='מפלס הרצפה הנמוכה ביותר במבנה' />
                <div className={classes.checkBoxs}>
-                  <FormControlLabel
-                     id='residence'
-                     name='residence'
-                     color="secondary"
+                  <CheckBox
                      label='בנין מגורים'
-                     control={<Checkbox color="secondary" checked={residence} onChange={() => setResidence(!residence)} />}
+                     checked={residence}
+                     onChange={() => setResidence(!residence)}
                   />
-                  <FormControlLabel
-                     id='crowding'
-                     name='crowding'
-                     color="secondary"
+                  <CheckBox
                      label='בנין להתקהלות'
-                     control={<Checkbox color="secondary" checked={crowding} onChange={() => setCrowding(!crowding)} />}
+                     checked={crowding}
+                     onChange={() => setCrowding(!crowding)}
                   />
 
                </div>

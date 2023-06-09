@@ -26,6 +26,11 @@
   align-items: flex-start;
 }
 
+.buildingCol1>* {
+  margin-block-end: 15px;
+  width: 100%;
+}
+
 .buildingCol2 {
   padding-block-start: 15px;
   grid-area: buildingCol2;
@@ -45,11 +50,8 @@
 }
 
 
-.textBox {
-  margin-block-end: 15px !important;
-  min-width: 250px !important;
-  width: max-content;
-}
+
+
 
 .SubmitBuilding {
   grid-area: submitBuilding;

@@ -1,11 +1,14 @@
+import {AppContextProider } from '../context/app-context';
 import Layout from '../components/layout/layout';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
-  return (    
+  return (
+    <AppContextProider>
       <Layout>
         <Component {...pageProps} />
-      </Layout>   
+      </Layout>
+    </AppContextProider>
   );
 }
 
