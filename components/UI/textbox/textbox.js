@@ -1,6 +1,6 @@
-//import classes from './textbox.module.css'
 import { TextField } from "@mui/material";
 const TextBox = ({
+    id,
     type,
     label,
     shrink = true,
@@ -13,14 +13,14 @@ const TextBox = ({
     inputRef
 }) => {
     return (
-        <div>
+        <>
             <TextField
                 fullWidth
-                id={label}
+                id={id}
                 label={label}
                 type={type}
                 color="secondary"
-                name={label}
+                name={id}
                 inputRef={inputRef}
                 InputLabelProps={{ shrink: shrink }}
                 helperText={helperText}
@@ -30,7 +30,7 @@ const TextBox = ({
                 placeholder={placeholder}
                 onChange={onChange}
             />
-        </div>
+        </>
 
     )
 }

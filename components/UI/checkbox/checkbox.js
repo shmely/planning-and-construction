@@ -2,6 +2,7 @@ import { FormControlLabel, Checkbox } from '@mui/material';
 const CheckBox = (
     
     {
+        id,
         label,
         checked,
         onChange
@@ -10,8 +11,8 @@ const CheckBox = (
 
     return (
         <FormControlLabel
-            id={label}
-            name={label}            
+            id={id}
+            name={id}            
             label={label}
             control={<Checkbox checked={checked} onChange={onChange} />}
         />

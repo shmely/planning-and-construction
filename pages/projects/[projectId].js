@@ -1,14 +1,16 @@
 import { useRouter } from 'next/router';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import classes from './project.module.css';
-import { TextField, Button } from "@mui/material";
+import { Button } from "@mui/material";
+import TextBox from '@/components/UI/textbox/textbox';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip from '@mui/material/Tooltip';
 import { getProjects } from '../api/projects/index';
-
-
+import AppContext from '../../context/app-context';
+import { projectService } from '../../services/projectSerivce.js';
 
 export default function Project(props) {
+    const { showMessage } = useContext(AppContext);
     const router = useRouter();
     const [currentProject, setCurrentProject] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -34,42 +36,27 @@ export default function Project(props) {
         setCurrentProject(updated);
     }
 
-
     const saveProject = async (event) => {
         event.preventDefault();
         setIsLoading(true);
 
-        const method = currentProject._id ? 'PUT' : 'POST'
-        const response = await fetch('/api/projects', {
-            method,
-            body: JSON.stringify(currentProject),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        if (response.status === 201) {
-            await refreshData();
-            const savedProj = await response.json();
+        try {
+            const savedProj = await projectService.saveProject(currentProject);
+            projectService.refreshData(router.asPath);
             setCurrentProject(savedProj);
             const projectRoute = `/projects/${savedProj._id}`
             setIsLoading(false);
             if (router.asPath !== projectRoute) {
                 router.replace(projectRoute);
             }
-
-        } else {
+            showMessage({ text: 'הפרויקט נשמר בהצלחה', type: 'success' })
+        } catch (error) {
             setIsLoading(false);
-            console.log(response.statusText);
+            console.log(error);
+            showMessage({ text: 'אופס משהו השתבש', type: 'error' });
         }
 
     }
-    const refreshData = async () => {
-        const url = `/api/revalidate?path=${router.asPath}`
-        console.log(url);
-        await fetch(url, { method: 'GET' });
-
-    }
-
 
     const moveToBuilding = () => {
         router.push(`${router.asPath}/buildings`);
@@ -91,37 +78,31 @@ export default function Project(props) {
             <form className={classes.form}>
                 <div className={classes.project}>
                     <h1 className={classes.title}>ניהול פרויקט</h1>
-                    <TextField
-                        id='projectName'
+                    <TextBox
+                        id='name'
                         label='שם פרויקט'
-                        color="secondary"
-                        name='name'
                         type='text'
-                        InputLabelProps={{ shrink: true }}
-                        className={classes.textBox}
                         value={currentProject.name}
                         multiline={false}
                         placeholder='הזן שם פרויקט'
                         onChange={onChange}
                     />
-                    <TextField
+                    <TextBox
                         id='address'
-                        name='address'
                         label='כתובת'
                         type='text'
-                        color="secondary"
-                        className={classes.textBox}
                         multiline={true}
-                        InputLabelProps={{ shrink: true }}
                         value={currentProject.address}
                         rows={3}
                         placeholder='הזן כתובת'
                         onChange={onChange}
                     />
                     <div className={classes.submitProject}>
-                        <Button color="secondary" onClick={saveProject} variant="contained" className={classes.button}>{addUpdateProjectBtn}</Button>
+                        <Button sx={{ width: '120px', marginInlineEnd: '15px' }} color="secondary" onClick={saveProject} variant="contained">{addUpdateProjectBtn}</Button>
                         <Tooltip title="עבור להוספת בינינים">
-                            <Button color="secondary" onClick={moveToBuilding} disabled={nextButtonDisabeled} variant="contained" className={classes.button}>הבא</Button>
+                            <span>
+                                <Button sx={{ width: '120px' }} color="secondary" onClick={moveToBuilding} disabled={nextButtonDisabeled} variant="contained" className={classes.button}>הבא</Button>
+                            </span>
                         </Tooltip>
                     </div>
 

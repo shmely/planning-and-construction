@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 
 const AppContext = React.createContext({
-    buildingsDefentions: {}
+    buildingsDefentions: {},
+    message: undefined
+
 
 });
 
-export const AppContextProider =(props) => {
+export const AppContextProider = (props) => {
+    const [message, setMessage] = useState(undefined);
     const [buildingsDefentions, setBuildingsDef] = useState(
         {
             '1-12': {
@@ -25,13 +28,19 @@ export const AppContextProider =(props) => {
 
 
 
+    const showMessage = (msg) => {
+        setMessage(msg);
+    }
+
     return (
         <AppContext.Provider
-            value={{ buildingsDefentions }}
+            value={{ buildingsDefentions, message, showMessage }}
         >
             {props.children}
         </AppContext.Provider>
     );
 };
+
+
 
 export default AppContext

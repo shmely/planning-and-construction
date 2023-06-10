@@ -1,8 +1,6 @@
-.building { 
+.building {
   padding: 15px;
-  grid-template-columns: min-content 300px 1fr;
-  border-top: 1px solid rgb(230, 221, 221);
-  border-bottom: 1px solid rgb(230, 221, 221);
+  grid-template-columns: min-content 300px 1fr;  
   display: grid;
   grid-template-areas:
     "title title title"
@@ -17,7 +15,7 @@
 }
 
 .buildingCol1 {
-  margin-inline-end: 15px; 
+  margin-inline-end: 15px;
   padding-block-start: 15px;
   grid-area: buildingCol1;
   display: flex;
@@ -26,7 +24,7 @@
   align-items: flex-start;
 }
 
-.buildingCol1>* {
+.buildingCol1 > div {
   margin-block-end: 15px;
   width: 100%;
 }
@@ -76,6 +74,7 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 
 }
+
 .lblType {
   display: block;
   color: #00000099;

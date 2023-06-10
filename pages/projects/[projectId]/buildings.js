@@ -8,8 +8,10 @@ import CheckBox from '@/components/UI/checkbox/checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
 import BuildingsList from '../../../components/building-list/buildingsList';
 import { getProjects } from '../../api/projects/index';
+import { projectService } from '../../../services/projectSerivce';
 
 export default function Buildings(props) {
+   const { showMessage } = useContext(AppContext);
    const { loadedBuildings, prjId } = props;
    const router = useRouter();
    const [maxFloor, setMaxFloor] = useState(0);
@@ -24,16 +26,12 @@ export default function Buildings(props) {
    const [crowding, setCrowding] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
    const { buildingsDefentions } = useContext(AppContext);
-
-
-
    useEffect(() => {
 
       if (loadedBuildings) {
          setBuildings(loadedBuildings);
       }
       if (prjId) setProjectId(prjId);
-
    }, [loadedBuildings]);
 
 
@@ -56,7 +54,6 @@ export default function Buildings(props) {
             if (height >= num1 && height <= num2) {
                return value
             }
-
          }
       }
       return null;
@@ -66,21 +63,24 @@ export default function Buildings(props) {
       const areYouSure = confirm("Press a button!");
       if (areYouSure) {
          setIsLoading(true);
-         const response = await fetch(`/api/buildings/${buildingId}`, {
-            method: 'DELETE'
-         });
-         if (response.status === 200) {
-            await refreshData();
-            const bb = [...buildings];
-            console.log(bb);
-            const cc = bb.filter(b => b._id !== buildingId);
-            console.log(cc);
-            setBuildings(cc);
+         try {
+            const response =await projectService.deleteBuilding(buildingId);
+            if (response.status === 200) {
+               projectService.refreshData(router.asPath);
+               const buildingsArray = [...buildings];               
+               const filterd = buildingsArray.filter(b => b._id !== buildingId);               
+               setBuildings(filterd);
+               setIsLoading(false);
+               showMessage({ text: 'הבנין נמחק בהצלחה', type: 'success' })
+            } else {
+               setIsLoading(false);
+               showMessage({ text: 'אופס משהו השתבש', type: 'error' });
+            }
+            
+         } catch (error) {
+            console.log(error);
             setIsLoading(false);
-         }
-         else {
-            console.log('error delete building')
-            setIsLoading(false);
+            showMessage({ text: 'אופס משהו השתבש', type: 'error' });
          }
 
       }
@@ -89,7 +89,6 @@ export default function Buildings(props) {
    const saveBuilding = async (event) => {
       event.preventDefault();
       setIsLoading(true);
-      console.log('on save building')
       const building = {
          _id: buildingId,
          projectId,
@@ -101,19 +100,12 @@ export default function Buildings(props) {
          residence,
          crowding
       }
-      const method = building._id ? 'PUT' : 'POST'
-      const response = await fetch('/api/buildings', {
-         method,
-         body: JSON.stringify(building),
-         headers: {
-            'Content-Type': 'application/json'
-         }
-      });
-      if (response.status === 201) {
-         refreshData();
-         const savedBuilding = await response.json();
+      const isInsert = building._id ? false : true;
+      try {
+         const savedBuilding = await projectService.saveBuilding(building);
+         projectService.refreshData(router.asPath);
          const updated = [...buildings]
-         if (method === 'POST')
+         if (isInsert)
             updated.push(savedBuilding)
          else {
             const itemIndex = updated.findIndex(item => item._id === savedBuilding._id);
@@ -123,15 +115,12 @@ export default function Buildings(props) {
          setBuildings(updated);
          clearValues();
          setIsLoading(false);
-
-
-      } else {
+         showMessage({ text: 'הבנין נשמר בהצלחה', type: 'success' })
+      } catch (error) {
          setIsLoading(false);
-         console.log(response.statusText);
+         console.log(error);
+         showMessage({ text: 'אופס משהו השתבש', type: 'error' });
       }
-
-
-
    }
 
    const clearValues = () => {
@@ -139,18 +128,13 @@ export default function Buildings(props) {
       descInput.current.value = '';
       floorsInput.current.value = 0;
       minFloorInput.current.value = 0,
-      setMaxFloor(0);
+         setMaxFloor(0);
       setBaseFloorLevel(0);
       setResidence(false);
       setCrowding(false);
 
+   }
 
-   }
-   const refreshData = async () => {
-      const url = `/api/revalidate?path=${router.asPath}`
-      console.log(url);
-      await fetch(url, { method: 'GET' });
-   }
 
    if (!projectId) {
       return <div>Loading...</div>
@@ -184,15 +168,16 @@ export default function Buildings(props) {
                   placeholder='הזן מספר קומות'
                />
                <TextBox
+                  id='baseFloorLevel'
                   type='number'
                   helperText='מטר'
                   multiline={false}
                   value={baseFloorLevel}
                   label='מפלס הקומה הקובעת'
-                  elperText='מטר'
                   placeholder='הזן מפלס הקומה הקובעת'
                   onChange={() => setBaseFloorLevel(+event.target.value)} />
                <TextBox
+                  id='maxFloor'
                   type='number'
                   value={maxFloor}
                   helperText='מטר'
@@ -200,21 +185,22 @@ export default function Buildings(props) {
                   label='מפלס הכניסה לקומה הגבוהה ביותר המיועדת לאיכלוס'
                   onChange={() => setMaxFloor(+event.target.value)} />
                <TextBox
-                  id='minFloor' name='minFloor'
+                  id='minFloor'
+                  name='minFloor'
                   type='number'
-                  className={classes.textBox}
-                  color="secondary"
                   inputRef={minFloorInput}
                   helperText='מטר'
                   InputLabelProps={{ shrink: true }}
                   multiline={false} label='מפלס הרצפה הנמוכה ביותר במבנה' />
                <div className={classes.checkBoxs}>
                   <CheckBox
+                     id='residence'
                      label='בנין מגורים'
                      checked={residence}
                      onChange={() => setResidence(!residence)}
                   />
                   <CheckBox
+                     id='crowding'
                      label='בנין להתקהלות'
                      checked={crowding}
                      onChange={() => setCrowding(!crowding)}
